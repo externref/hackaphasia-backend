@@ -42,6 +42,7 @@ async def get_solor_data() -> dict[str, typing.Any]:
     sessions = await ws.manager.sqlite_connection.execute_fetchall(
         "SELECT * FROM solar_data;"
     )
+    prediction = await ml.create_prediction_for_solar_energy(list(sessions))
     total_gen = 0
     total_con = 0
     for session in sessions:
@@ -49,6 +50,7 @@ async def get_solor_data() -> dict[str, typing.Any]:
         total_con += session[1]
     data["power_generated"] = total_gen
     data["power_consumed"] = total_con
+    data["predicted_power"] = float(prediction)
     data["sessions"] = sessions
     return data
 
